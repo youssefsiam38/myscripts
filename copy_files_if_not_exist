@@ -1,8 +1,17 @@
 #!/bin/bash
 
+# Usage example:
+# ./script.sh /path/to/folder/A /path/to/folder/B
+
+# Check if source and destination directories are provided as command line arguments
+if [ $# -lt 2 ]; then
+  echo "Usage: $0 <source_directory> <destination_directory>"
+  exit 1
+fi
+
 # Source and destination directories
-source_dir="/path/to/folder/A"
-destination_dir="/path/to/folder/B"
+source_dir="$1"
+destination_dir="$2"
 
 # Create a new directory in the destination folder
 new_dir="${destination_dir}/new_folder"
