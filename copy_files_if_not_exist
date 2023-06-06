@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Source and destination directories
+source_dir="/path/to/folder/A"
+destination_dir="/path/to/folder/B"
+
+# Create a new directory in the destination folder
+new_dir="${destination_dir}/new_folder"
+mkdir -p "$new_dir"
+
+# Function to check if a file exists in the destination directory tree
+file_exists_in_destination() {
+  local file="$1"
+  find "$destination_dir" -type f -name "$file" | grep -q .
+}
+
+# Function to copy files to the new directory
+copy_files() {
+  local dir="$1"
+  local dest_dir="$2"
+
+  # Loop through files in the source directory
+  for file in "$dir"/*; do
+    # Extract file name from the path
+    filename="${file##*/}"
+
+    # Check if the file already exists in the destination directory tree
+    if file_exists_in_destination "$filename"; then
+      echo "Skipping $filename (already exists in destination)"
+    else
+      # Copy the file to the new directory
+      cp -r "$file" "$dest_dir"
+      echo "Copied $filename to $dest_dir"
+    fi
+  done
+
+  # Recursively copy files from subdirectories
+  for subdir in "$dir"/*/; do
+    # Extract subdirectory name from the path
+    dirname="${subdir%%/}"
+
+    # Create a corresponding subdirectory in the destination directory
+    new_subdir="${dest_dir}/${dirname}"
+    mkdir -p "$new_subdir"
+
+    # Recursive call to copy files from the subdirectory
+    copy_files "$subdir" "$new_subdir"
+  done
+}
+
+# Start copying files
+copy_files "$source_dir" "$new_dir"
