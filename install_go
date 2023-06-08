@@ -1,0 +1,14 @@
+#!/bin/bash
+
+read -p "Enter the Go version you want to install: " version
+
+filename="go${version}.linux-amd64.tar.gz"
+filepath="~/Downloads/${filename}"
+
+if [ ! -e "$filepath" ]; then
+  echo "Error: $filename does not exist."
+  exit 1
+fi
+
+sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf "$filepath"
